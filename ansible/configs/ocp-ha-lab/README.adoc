@@ -70,11 +70,11 @@ time ansible-playbook -i inventory/ ./main.yml -e "guid=${GUID}" -e "env_type=${
 
 
 . To Delete an environment
-----
 
+[source,text]
+----
 #To Destroy an Env
 ansible-playbook -i inventory/ ./configs/${ENVTYPE}/destroy_env.yml \
  -e "guid=${GUID}" -e "env_type=${ENVTYPE}"  -e "cloud_provider=${CLOUDPROVIDER}" -e "aws_region=${REGION}"  \
  -e "HostedZoneId=${HOSTZONEID}"  -e "key_name=${KEYNAME}"  -e "subdomain_base_suffix=${BASESUFFIX}"
-
 ----
