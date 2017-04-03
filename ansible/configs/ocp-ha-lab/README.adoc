@@ -67,7 +67,7 @@ time ansible-playbook -i inventory/ ./main.yml -e "guid=${GUID}" -e "env_type=${
   -e "node_instance_count=3" -e "infranode_instance_count=2" -e "master_instance_count=3" \
   -e "software_to_deploy=openshift"  -e "own_repo_path=${REPO_PATH}" \
    --skip-tags=installing_openshift,opentlc_bastion_tasks -vvv
-
+----
 
 . To Delete an environment
 
