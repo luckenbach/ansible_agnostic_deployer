@@ -5,8 +5,8 @@
   gather_facts: false
   become: false
   vars_files:
-    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_vars.yml"
-    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_secret_vars.yml"
+    - "{{ ansible_root }}/configs/{{ env_type }}/env_vars.yml"
+    - "{{ ansible_root }}/configs/{{ env_type }}/env_secret_vars.yml"
   tags:
     - step001
     - create_ssh_config
@@ -19,12 +19,12 @@
 
   - name: Create empty local ssh config as defined by deploy_local_ssh_config_location
     file:
-      dest: "{{ ansible_env.PWD }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
+      dest: "{{ ansible_root }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
       state: touch
 
   - name: Add bastion proxy config to workdir ssh config file
     blockinfile:
-      dest: "{{ ansible_env.PWD }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
+      dest: "{{ ansible_root }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
       marker: "##### {mark} ADDED BASTION PROXY HOST {{ env_type }}-{{ guid }} ######"
       content: |
           Host {{ bastion_hostname }}
@@ -41,7 +41,7 @@
 
   - name: Add all hosts to workdir ssh config file
     blockinfile:
-      dest: "{{ ansible_env.PWD }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
+      dest: "{{ ansible_root }}/workdir/{{ env_type }}_{{ guid }}_ssh_conf"
       marker: "##### {mark} ADDED Node Proxy Config  {{ item }} {{ env_type }}-{{ guid }} ######"
       block: |
           Host {{ item }}
