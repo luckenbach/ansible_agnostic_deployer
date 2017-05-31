@@ -25,6 +25,9 @@
     app_template: "{{playbook_dir}}/workdir/{{cloud_provider}}_cloud_template.{{ env_type }}.{{ guid }}.template"
     state: design
   register: design_results
+  tags:
+    - ravello_infrastructure_deployment
+    - create_ravello_blueprint
 
 - debug:
     var: "{{ item }}"
@@ -78,7 +81,6 @@
 
 ######################### Update the inventory
 
-
 - name: Refresh cloud_provider cache
   shell: "{{ playbook_dir }}/inventory/{{ cloud_provider }}.py  --list {{ app_results.app_name }}"
   when: "not tower_run == 'true'"
@@ -95,3 +97,33 @@
   meta: refresh_inventory
   tags:
    - refresh_inventory
+
+
+
+- name: Wait for environment Readiness
+  hosts: bastion
+#    - "{{ ('tag_Project_' ~ env_type ~ '_' ~ guid) | replace('-', '_') }}"
+  vars_files:
+    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_vars.yml"
+    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_secret_vars.yml"
+    - "{{ inventory_dir }}/../configs/{{ env_type }}/ssh_vars.yml"
+  gather_facts: false
+  any_errors_fatal: True
+  become: true
+  tags:
+    - step001
+    - wait_ssh
+    - set_hostname
+  tasks:
+    - name: wait for host to be available and set hostnames
+      wait_for:
+        host: '{{ inventory_hostname }}'
+        port: 22
+        search_regex: OpenSSH
+      delegate_to: localhost
+      become: false
+    - debug:
+        msg: "{{hostvars[inventory_hostname]}}"
+    - name: Set hostname based on ec2_tag_internaldns
+      hostname:
+        name: "{{inventory_hostname}}"
