@@ -13,12 +13,11 @@
   tasks:
     - name: Generate Ravello Template
       template:
-        src: "{{playbook_dir}}/configs/{{ env_type }}/files/cloud_providers/{{cloud_provider}}_cloud_template.j2"
-        dest: "{{playbook_dir}}/workdir/{{cloud_provider}}_cloud_template.{{ env_type }}.{{ guid }}.template"
+        src: "{{ ansible_root }}/configs/{{ env_type }}/files/cloud_providers/{{cloud_provider}}_cloud_template.j2"
+        dest: "{{ ansible_root }}/workdir/{{cloud_provider}}_cloud_template.{{ env_type }}.{{ guid }}.template"
       tags:
         - ravello_infrastructure_deployment
         - gen_rav_template
-
     ######################### Create Ravello Blueprint
 
     - name: display variables for create blueprint based on {{ app_template }}
@@ -34,7 +33,7 @@
         module: ravello_app
         app_name: "{{ blueprint_name }}"
         description: "{{ blueprint_description }}"
-        app_template: "{{playbook_dir}}/workdir/{{cloud_provider}}_cloud_template.{{ env_type }}.{{ guid }}.template"
+        app_template: "{{ ansible_root }}/workdir/{{cloud_provider}}_cloud_template.{{ env_type }}.{{ guid }}.template"
         state: design
       register: design_results
       tags:
