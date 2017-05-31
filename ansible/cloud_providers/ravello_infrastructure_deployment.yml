@@ -5,8 +5,8 @@
   gather_facts: false
   become: false
   vars_files:
-    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_vars.yml"
-    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_secret_vars.yml"
+    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_vars.yml"
+    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_secret_vars.yml"
   tags:
     - step001
     - deploy_infrastructure
@@ -111,15 +111,15 @@
        - refresh_inventory
 
 - name: Configure local ssh config for bastion proxy use
-  include: "{{inventory_dir}}/../cloud_providers/{{cloud_provider}}_ssh_config_setup.yml"
+  include: "{{ ansible_env.PWD }}/cloud_providers/{{cloud_provider}}_ssh_config_setup.yml"
 
 - name: Wait for environment Readiness
   hosts: bastion
 #    - "{{ ('tag_Project_' ~ env_type ~ '_' ~ guid) | replace('-', '_') }}"
   vars_files:
-    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_vars.yml"
-    - "{{ inventory_dir }}/../configs/{{ env_type }}/env_secret_vars.yml"
-    - "{{ inventory_dir }}/../configs/{{ env_type }}/ssh_vars.yml"
+    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_vars.yml"
+    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/env_secret_vars.yml"
+    - "{{ ansible_env.PWD }}/configs/{{ env_type }}/ssh_vars.yml"
   gather_facts: false
   any_errors_fatal: True
   become: true
